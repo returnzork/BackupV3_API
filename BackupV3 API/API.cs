@@ -9,7 +9,10 @@ namespace returnzork.BackupV3_API
 {
     public interface BackupV3API
     {
+        void Initialize();
+
         void Work(string[] Imports);
+
 
         void Interface();
 
