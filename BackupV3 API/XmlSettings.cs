@@ -5,9 +5,9 @@ using System.Text;
 using System.Xml;
 
 
-namespace returnzork.BackupV3_API.XmlReader
+namespace returnzork.BackupV3_API.XmlSettings
 {
-    public class XmlReader
+    public class XmlSettings
     {
         private string Config;
 
@@ -15,7 +15,7 @@ namespace returnzork.BackupV3_API.XmlReader
         /// Start xml reader
         /// </summary>
         /// <param name="Config">Location of the XML configuration file</param>
-        public XmlReader(string Config)
+        public XmlSettings(string Config)
         {
             this.Config = Config;
         }
@@ -52,6 +52,7 @@ namespace returnzork.BackupV3_API.XmlReader
         private string[] test;
         public string[] array()
         {
+            GetAllKeys();
             Array.Resize(ref test, 5);
 
 
@@ -61,10 +62,11 @@ namespace returnzork.BackupV3_API.XmlReader
         }
 
 
-        private string[] Keys;
+        private string[] Keys = { };
         public string[] GetAllKeys()
         {
             XmlDocument xd = new XmlDocument();
+            
             xd.Load(Config);
 
 
@@ -73,6 +75,21 @@ namespace returnzork.BackupV3_API.XmlReader
 
             int NodeNum = 0;
 
+
+
+           System.Xml.XmlReader rdr = System.Xml.XmlReader.Create(new System.IO.StreamReader(Config));
+
+
+            while (rdr.Read())
+            {
+                if (rdr.NodeType == XmlNodeType.Element)
+                {
+                    Array.Resize(ref Keys, Keys.Length + 1);
+                    Keys[NodeNum] = rdr.LocalName;
+                    NodeNum++;
+                }
+            }
+            return Keys;
 
 
 
