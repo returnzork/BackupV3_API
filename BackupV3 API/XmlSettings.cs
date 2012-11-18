@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 
 namespace returnzork.BackupV3_API.XmlSettings
@@ -43,41 +44,19 @@ namespace returnzork.BackupV3_API.XmlSettings
             return null;
         }
 
+
+        private string[] Keys = { };
         /// <summary>
         /// Return all nodes in given xml document
         /// </summary>
-
-
-
-        private string[] test;
-        public string[] array()
-        {
-            GetAllKeys();
-            Array.Resize(ref test, 5);
-
-
-            test[0] = "test";
-            test[1] = "fdsa";
-            return test;
-        }
-
-
-        private string[] Keys = { };
         public string[] GetAllKeys()
         {
-            XmlDocument xd = new XmlDocument();
-            
-            xd.Load(Config);
-
-
-            XmlElement root = xd.DocumentElement;
-            XmlNodeList nodes = root.SelectNodes("/configuration/settings/*");
-
             int NodeNum = 0;
 
 
+            FileStream fs = new FileStream(Config, FileMode.Open);
 
-           System.Xml.XmlReader rdr = System.Xml.XmlReader.Create(new System.IO.StreamReader(Config));
+           XmlReader rdr = XmlReader.Create(new System.IO.StreamReader(fs));
 
 
             while (rdr.Read())
@@ -89,21 +68,12 @@ namespace returnzork.BackupV3_API.XmlSettings
                     NodeNum++;
                 }
             }
+            rdr.Close();
+            fs.Close();
+
+
+
             return Keys;
-
-
-
-            //TODO make it give the inside node instead of node name
-
-            foreach (XmlNode node in nodes)
-            {
-                Array.Resize(ref Keys, NodeNum + 1);
-                Keys[NodeNum] = node.Name;
-                //Console.WriteLine("Current node: {0} \r\nNode is: {1} \r\n", NodeNum, node.Name);
-                NodeNum++;
-            }
-            return Keys;
-            //return array;
         }
 
         /// <summary>
@@ -122,6 +92,36 @@ namespace returnzork.BackupV3_API.XmlSettings
             xd.Load(Config);
             node = xd.SelectSingleNode("descendant::*[name(.) = '" + Key + "']");
             node.InnerText = Text;
+            xd.Save(Config);
+            
+        }
+
+
+        /// <summary>
+        /// Create the specified key
+        /// </summary>
+        /// <param name="Key">Key to create</param>
+        public void CreateKey(string Key)
+        {
+            XmlDocument xd = new XmlDocument();
+            FileStream filestream = new FileStream(Config, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+
+
+
+            xd.Load(filestream);
+
+
+
+            XmlNode node1 = xd.SelectSingleNode("configuration/Settings");
+            XmlNode newlink = xd.CreateNode(XmlNodeType.Element, Key, null);
+
+            newlink.InnerText = "";
+
+            node1.AppendChild(newlink);
+
+            //filestream.Close();
+            filestream.Close();
+
             xd.Save(Config);
         }
     }
