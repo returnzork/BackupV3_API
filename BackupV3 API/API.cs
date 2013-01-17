@@ -19,5 +19,7 @@ namespace returnzork.BackupV3_API
         string Author();
         string Version();
         string Name();
+
+        int Priority();
     }
 }

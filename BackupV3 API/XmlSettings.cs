@@ -6,7 +6,7 @@ using System.Xml;
 using System.IO;
 
 
-namespace returnzork.BackupV3_API.XmlSettings
+namespace returnzork.XmlSettings
 {
     public class XmlSettings
     {
