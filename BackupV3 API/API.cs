@@ -21,5 +21,11 @@ namespace returnzork.BackupV3_API
         string Name();
 
         int Priority();
+
+
+
+        TimeToRun RunTime { get; }
     }
+
+    public enum TimeToRun { Before, After, Both }
 }
